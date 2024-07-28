@@ -1,48 +1,34 @@
 package com.cjanie.scheduler_api;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
-public class RunOSCommandTest {
+import com.cjanie.scheduler_api.OS.CheckOS;
+import com.cjanie.scheduler_api.OS.ShellCommand;
+
+public class ShellCommandTest {
     
     @Test
     public void runOsCommand() throws IOException, InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder();
+        String[] command;
 
         // TODO command factory
 		if(CheckOS.isWindows) {
-			builder.command("cmd.exe", "/c", "dir");
+			command = new String[] {"cmd.exe", "/c", "dir"};
 		} else {
-			builder.command("sh", "-c", "ls");
+			command = new String[] {"sh", "-c", "ls"};
 		}
 
-        builder.directory(new File(System.getProperty("user.home")));
-        Process process = builder.start();
-        StreamGobbler streamGobbler = 
-        new StreamGobbler(process.getInputStream(), System.out::println);
-        ExecutorService executorService = 
-        new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,   
-        new LinkedBlockingQueue<Runnable>());
-        Future<?> future = executorService.submit(streamGobbler);
-
-        int exitCode = process.waitFor();
-        assertDoesNotThrow(() -> future.get(10, TimeUnit.SECONDS));
+        int exitCode = ShellCommand.runCmd(command);
         assertEquals(0, exitCode); 
     }
 
