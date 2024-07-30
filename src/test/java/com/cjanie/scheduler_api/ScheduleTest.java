@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.Schedule;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
@@ -18,10 +19,11 @@ public class ScheduleTest {
     public void shouldReturnTasksToRunAtASpecificTime() {
 
          // Prepare schedule with tasks
-        Schedule schedule = new Schedule();
+        InMemoryTaskRepository taskRepository = new InMemoryTaskRepository();
         Task task1 = new TaskPowerOn(LocalTime.of(20, 0, 0));
         Task task2 = new TaskPowerOff(LocalTime.of(8, 0, 0));
-        schedule.setTasks(List.of(task1, task2));
+        taskRepository.setTasks(List.of(task1, task2));
+        Schedule schedule = new Schedule(taskRepository);
 
         // SUT
         List<Task> tasks = schedule.filterTasksByTriggerTime(LocalTime.of(8, 0, 0));
@@ -33,7 +35,7 @@ public class ScheduleTest {
     public void shouldReturnNoTaskWhenThereIsNoneToRunAtASpecificTime() {
 
          // Prepare empty schedule (tasks empty)
-        Schedule schedule = new Schedule();
+        Schedule schedule = new Schedule(new InMemoryTaskRepository());
 
         // SUT
         List<Task> tasks = schedule.filterTasksByTriggerTime(LocalTime.of(8, 0, 0));

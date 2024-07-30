@@ -4,28 +4,20 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
+
 public class Schedule {
 
-    private List<Task> tasks;
+    private TaskRepository taskRepository;
 
-
-    public Schedule() {
-       this.tasks = new ArrayList<>();
+    public Schedule(TaskRepository taskRepository) {
+       this.taskRepository = taskRepository;
     }
-
-
-    public List<Task> getTasks() {
-        return this.tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
-
+    
     public List<Task> filterTasksByTriggerTime(LocalTime triggerTime) {
         List<Task> filteredTasks = new ArrayList<>();
         
-            for (Task task: this.tasks) {
+            for (Task task: this.taskRepository.getTasks()) {
                 if (task.getTriggerTime().getHour() == triggerTime.getHour() && 
                     task.getTriggerTime().getMinute() == triggerTime.getMinute() &&
                     task.getTriggerTime().getSecond() == triggerTime.getSecond()
