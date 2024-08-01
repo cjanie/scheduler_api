@@ -13,7 +13,7 @@ import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 
-public class ScheduleTest {
+public class ScheduleTests {
     
     @Test
     public void shouldReturnTasksToRunAtASpecificTime() {
@@ -56,7 +56,7 @@ public class ScheduleTest {
         taskRepository.setTasks(tasks);
         // SUT
         Schedule schedule = new Schedule(taskRepository);
-        List<Task> nextTasks = schedule.getNextTasks(LocalTime.of(10, 0, 0));
-        assertEquals(20, nextTasks.get(0).getTriggerTime().getHour());
+        LocalTime next = schedule.getNextTriggerTime(LocalTime.of(10, 0, 0));
+        assertEquals(20, next.getHour());
     }
 }

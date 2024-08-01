@@ -16,10 +16,12 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.RealTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
+import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
 import com.cjanie.scheduler_api.businesslogic.utils.LocalDateTimeUtil;
 import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
@@ -37,19 +39,24 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
     // Dependencies injection
     
     public TickService tickService() {
-        return new TickService(taskRepository());
+        return new TickService(taskRepository(), timeProvider());
     }
 
     
     public TaskRepository taskRepository() {
         InMemoryTaskRepository taskRepository = new InMemoryTaskRepository();
         
-        Task task1 = new TaskPowerOn(LocalTime.of(0, 6, 0));
-        Task task2 = new TaskPowerOff(LocalTime.of(0, 5, 0));
-        Task task3 = new TaskPowerOff(LocalTime.of(0, 3, 0));
+        Task task1 = new TaskPowerOn(LocalTime.of(1, 17, 0));
+        Task task2 = new TaskPowerOff(LocalTime.of(1, 18, 0));
+        Task task3 = new TaskPowerOff(LocalTime.of(1, 21, 0));
         taskRepository.setTasks(List.of(task1, task2, task3));
         
+        
         return taskRepository;
+    }
+
+    public TimeProvider timeProvider() {
+        return new RealTimeProvider();
     }
 
     @Bean
@@ -82,7 +89,7 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
                     nextExcecution = LocalTimeUtil.convertLocalTimeToInstant(nextTickTime);
                     System.out.println("LOG " + TAG + " : next Excecution time = " + nextTickTime);
                 } else {
-                    nextExcecution = new Date().toInstant().plusMillis(this.tickService.getDefaultDelayMillis());
+                    nextExcecution = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().plusMillis(this.tickService.getDefaultDelayMillis());
                     System.out.println("LOG " + TAG + " : next Excecution delay = " + this.tickService.getDefaultDelayMillis());
                 }
                 

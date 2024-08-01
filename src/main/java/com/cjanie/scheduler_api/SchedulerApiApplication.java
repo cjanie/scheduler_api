@@ -8,7 +8,6 @@ public class SchedulerApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SchedulerApiApplication.class, args);
-		System.out.println("APP STARTED MAIN");
 	}
 
 }
