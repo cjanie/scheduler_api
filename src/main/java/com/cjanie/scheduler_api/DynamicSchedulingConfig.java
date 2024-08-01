@@ -1,7 +1,9 @@
 package com.cjanie.scheduler_api;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -18,6 +20,8 @@ import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
+import com.cjanie.scheduler_api.businesslogic.utils.LocalDateTimeUtil;
+import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
 // https://www.baeldung.com/spring-scheduled-tasks
 
@@ -26,17 +30,25 @@ import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 @ComponentScan("com.cjanie.scheduler_api")
 public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
-    @Bean
+    private static String TAG = DynamicSchedulingConfig.class.getName();
+
+    private TickService tickService;
+
+    // Dependencies injection
+    
     public TickService tickService() {
         return new TickService(taskRepository());
     }
 
-    @Bean 
+    
     public TaskRepository taskRepository() {
         InMemoryTaskRepository taskRepository = new InMemoryTaskRepository();
-        Task task1 = new TaskPowerOn(LocalTime.of(20, 0, 0));
-        Task task2 = new TaskPowerOff(LocalTime.of(8, 0, 0));
-        taskRepository.setTasks(List.of(task1, task2));
+        
+        Task task1 = new TaskPowerOn(LocalTime.of(0, 6, 0));
+        Task task2 = new TaskPowerOff(LocalTime.of(0, 5, 0));
+        Task task3 = new TaskPowerOff(LocalTime.of(0, 3, 0));
+        taskRepository.setTasks(List.of(task1, task2, task3));
+        
         return taskRepository;
     }
 
@@ -45,29 +57,36 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
         return Executors.newSingleThreadScheduledExecutor();
     }
 
+    // Constructor
+    public DynamicSchedulingConfig() {
+        this.tickService = tickService();
+    }
+
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(taskExecutor());
 
 
         // add a Runnable task and a Trigger implementation to recalculate the nextExecutionTime after the end of each execution
-        TickService tickService = tickService();
 
         taskRegistrar.addTriggerTask(
-            () -> tickService.tick(),
+            () -> {
+                tickService.tick();
+            },
             (triggerContext) -> {
-                Instant nextExecution = null;
-                if(triggerContext != null) {
-                    Instant lastCompletion = triggerContext.lastCompletion();
-                    if(lastCompletion != null) {
-                        nextExecution = lastCompletion.plusMillis(tickService.getDelay());
-                    } else {
-                        nextExecution = new Date().toInstant().plusMillis(tickService.getDelay());
-                    }    
+
+                LocalTime nextTickTime = this.tickService.getNextTickTime();
+                Instant nextExcecution;
+                if(nextTickTime != null) {
+                    nextExcecution = LocalTimeUtil.convertLocalTimeToInstant(nextTickTime);
+                    System.out.println("LOG " + TAG + " : next Excecution time = " + nextTickTime);
                 } else {
-                    nextExecution = new Date().toInstant().plusMillis(tickService.getDelay());
+                    nextExcecution = new Date().toInstant().plusMillis(this.tickService.getDefaultDelayMillis());
+                    System.out.println("LOG " + TAG + " : next Excecution delay = " + this.tickService.getDefaultDelayMillis());
                 }
-                return nextExecution;
+                
+                return nextExcecution;
             }
         );    
     }

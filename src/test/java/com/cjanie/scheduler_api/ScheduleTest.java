@@ -42,4 +42,21 @@ public class ScheduleTest {
 
         assertEquals(0, tasks.size());
     }
+
+
+    @Test
+    public void nextTask() {
+        // Prepare
+        InMemoryTaskRepository taskRepository = new InMemoryTaskRepository();
+        Task task0 = new TaskPowerOn(LocalTime.of(20, 0, 0));
+        Task task1 = new TaskPowerOn(LocalTime.of(8, 0, 0));
+        Task task2 = new TaskPowerOn(LocalTime.of(10, 0, 0));
+        Task task3 = new TaskPowerOff(LocalTime.of(9, 0, 0));
+        List<Task> tasks = List.of(task0, task1, task2, task3);
+        taskRepository.setTasks(tasks);
+        // SUT
+        Schedule schedule = new Schedule(taskRepository);
+        List<Task> nextTasks = schedule.getNextTasks(LocalTime.of(10, 0, 0));
+        assertEquals(20, nextTasks.get(0).getTriggerTime().getHour());
+    }
 }
