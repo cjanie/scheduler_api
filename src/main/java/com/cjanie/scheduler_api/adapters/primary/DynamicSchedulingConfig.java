@@ -1,4 +1,4 @@
-package com.cjanie.scheduler_api;
+package com.cjanie.scheduler_api.adapters.primary;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -15,13 +15,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
-import com.cjanie.scheduler_api.adapters.RealTimeProvider;
+import com.cjanie.scheduler_api.DI;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
+import com.cjanie.scheduler_api.businesslogic.services.TickService;
 import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
 // https://www.baeldung.com/spring-scheduled-tasks

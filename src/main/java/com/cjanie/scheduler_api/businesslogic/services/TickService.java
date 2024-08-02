@@ -1,4 +1,4 @@
-package com.cjanie.scheduler_api;
+package com.cjanie.scheduler_api.businesslogic.services;
 
 import java.time.Instant;
 import java.time.LocalDate;

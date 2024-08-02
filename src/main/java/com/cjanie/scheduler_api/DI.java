@@ -1,11 +1,12 @@
 package com.cjanie.scheduler_api;
 
-import com.cjanie.scheduler_api.adapters.InMemoryAutomationRepository;
-import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
-import com.cjanie.scheduler_api.adapters.RealTimeProvider;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
+import com.cjanie.scheduler_api.businesslogic.services.TickService;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
 public class DI {

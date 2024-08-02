@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.Schedule;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;

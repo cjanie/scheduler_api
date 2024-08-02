@@ -1,4 +1,4 @@
-package com.cjanie.scheduler_api.controllers;
+package com.cjanie.scheduler_api.adapters.primary.controllers;
 
 import java.time.LocalTime;
 

@@ -1,6 +1,7 @@
 package com.cjanie.scheduler_api;
 
-import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
@@ -13,7 +14,6 @@ import java.time.LocalTime;
 
 import org.junit.jupiter.api.Test;
 
-import com.cjanie.scheduler_api.adapters.InMemoryAutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;

@@ -7,11 +7,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.cjanie.scheduler_api.adapters.DeterministicTimeProvider;
-import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.DeterministicTimeProvider;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
+import com.cjanie.scheduler_api.businesslogic.services.TickService;
 
 public class TickServiceTests {
 
