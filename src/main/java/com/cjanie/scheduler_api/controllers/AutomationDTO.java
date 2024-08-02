@@ -1,0 +1,36 @@
+package com.cjanie.scheduler_api.controllers;
+
+import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class AutomationDTO {
+
+    @JsonFormat(pattern = "hh:mm:ss")
+    private LocalTime powerOnTime;
+
+    @JsonFormat(pattern = "hh:mm:ss")
+    private LocalTime powerOffTime;
+
+    public AutomationDTO(LocalTime powerOnTime, LocalTime powerOffTime) {
+        this.powerOnTime = powerOnTime;
+        this.powerOffTime = powerOffTime;
+    }
+
+    public LocalTime getPowerOnTime() {
+        return this.powerOnTime;
+    }
+
+    public void setPowerOnTime(LocalTime powerOnTime) {
+        this.powerOnTime = powerOnTime;
+    }
+
+    public LocalTime getPowerOffTime() {
+        return this.powerOffTime;
+    }
+
+    public void setPowerOffTime(LocalTime powerOffTime) {
+        this.powerOffTime = powerOffTime;
+    }
+
+}
