@@ -1,6 +1,7 @@
 package com.cjanie.scheduler_api.businesslogic;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class Automation {
 
@@ -27,6 +28,13 @@ public class Automation {
 
     public void setPowerOffTime(LocalTime powerOffTime) {
         this.powerOffTime = powerOffTime;
+    }
+
+    public List<Task> createTasks() {
+        return List.of(
+            new TaskPowerOn(this.powerOnTime),
+            new TaskPowerOff(this.powerOffTime)
+        );
     }
 
 }

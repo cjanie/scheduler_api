@@ -1,7 +1,13 @@
 package com.cjanie.scheduler_api;
 
+import com.cjanie.scheduler_api.adapters.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.businesslogic.Task;
+import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
+import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
+import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalTime;
 
@@ -18,10 +24,21 @@ public class AddAutomationServiceTests {
     @Test
     public void addAutomationWithSuccess() throws RepositoryException {
         AutomationRepository automationRepository = new InMemoryAutomationRepository();
-        AddAutomationService addAutomationService = new AddAutomationService(automationRepository);
-        Automation automation = new Automation(LocalTime.now(), LocalTime.now().plusHours(1));
+        TaskRepository taskRepository = new InMemoryTaskRepository();
+        AddAutomationService addAutomationService = new AddAutomationService(automationRepository, taskRepository);
+        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0));
         long result = addAutomationService.add(automation);
         assertNotEquals(0, result);
+
+        assertEquals(2, taskRepository.getTasks().size());
+        
+        Task powerOn = taskRepository.getTasks().get(0);
+        assertTrue(powerOn instanceof TaskPowerOn);
+        assertEquals(1, powerOn.getTriggerTime().getHour());
+
+        Task powerOff = taskRepository.getTasks().get(1);
+        assertTrue(powerOff instanceof TaskPowerOff);
+        assertEquals(2, powerOff.getTriggerTime().getHour());
     }
 
 }
