@@ -2,6 +2,7 @@ package com.cjanie.scheduler_api.controllers;
 
 import java.time.LocalTime;
 
+import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class AutomationDTO {
@@ -31,6 +32,14 @@ public class AutomationDTO {
 
     public void setPowerOffTime(LocalTime powerOffTime) {
         this.powerOffTime = powerOffTime;
+    }
+
+    public Automation createAutomation() {
+        Automation automation = new Automation(
+                this.getPowerOnTime(),
+                this.getPowerOffTime()
+                );
+        return automation;
     }
 
 }

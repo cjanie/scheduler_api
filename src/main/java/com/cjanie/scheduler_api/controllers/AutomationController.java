@@ -30,11 +30,8 @@ public class AutomationController {
     
 
     @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody AutomationDTO automationDTO) {
-        Automation automation = new Automation(
-                automationDTO.getPowerOnTime(),
-                automationDTO.getPowerOffTime());
+        Automation automation = automationDTO.createAutomation();
         try {
             long result = this.automationService.add(automation);
             return new ResponseEntity<Long>(result, HttpStatus.OK);
