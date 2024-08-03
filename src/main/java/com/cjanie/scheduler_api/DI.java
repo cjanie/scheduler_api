@@ -12,6 +12,7 @@ import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
+import com.cjanie.scheduler_api.businesslogic.services.TickServiceState;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
 
@@ -41,6 +42,8 @@ public class DI {
     private RunTaskGateway runTaskGateway;
 
     private TickService tickService;
+
+    private TickServiceState tickServiceState;
 
     private AddAutomationService addAutomationService;
 
@@ -84,9 +87,18 @@ public class DI {
             this.tickService = new TickService(
                 this.taskRepository(), 
                 this.systemTimeProvider(), 
-                this.runTaskGateway());
+                this.runTaskGateway(),
+                this.tickServiceState()
+                );
         }
         return this.tickService;
+    }
+
+    public TickServiceState tickServiceState() {
+        if(this.tickServiceState == null) {
+            this.tickServiceState = new TickServiceState();
+        }
+        return this.tickServiceState;
     }
 
     public AddAutomationService addAutomationService() {
@@ -94,7 +106,9 @@ public class DI {
             this.addAutomationService = new AddAutomationService(
                 this.automationRepository(),
                 this.taskRepository(),
-                this.systemZoneProvider()
+                this.systemTimeProvider(),
+                this.tickServiceState(),
+                this.runTaskGateway()
             );
         }
         return this.addAutomationService;

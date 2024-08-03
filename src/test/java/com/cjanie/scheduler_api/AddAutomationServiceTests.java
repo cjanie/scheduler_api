@@ -1,8 +1,9 @@
 package com.cjanie.scheduler_api;
 
+import com.cjanie.scheduler_api.adapters.secondary.DeterministicTimeProvider;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryRunTaskAPI;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
-import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
@@ -18,7 +19,8 @@ import org.junit.jupiter.api.Test;
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
+import com.cjanie.scheduler_api.businesslogic.services.TickServiceState;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
 public class AddAutomationServiceTests {
@@ -27,9 +29,15 @@ public class AddAutomationServiceTests {
     public void addAutomationWithSuccess() throws RepositoryException {
         AutomationRepository automationRepository = new InMemoryAutomationRepository();
         TaskRepository taskRepository = new InMemoryTaskRepository();
-        SystemZoneProvider genericZoneProvider = new SystemDefaultZoneProvider();
-        AddAutomationService addAutomationService = new AddAutomationService(automationRepository, taskRepository, genericZoneProvider);
-        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), genericZoneProvider.getZoneId());
+        SystemTimeProvider timeProvider = new DeterministicTimeProvider(LocalTime.of(0, 0, 0));
+        AddAutomationService addAutomationService = new AddAutomationService(
+            automationRepository, 
+            taskRepository, 
+            timeProvider,
+            new TickServiceState(),
+            new InMemoryRunTaskAPI(timeProvider)
+            );
+        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), timeProvider.getZoneId());
         long result = addAutomationService.add(automation);
         assertNotEquals(0, result);
 

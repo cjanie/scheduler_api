@@ -1,5 +1,6 @@
 package com.cjanie.scheduler_api.businesslogic.utils;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -60,6 +61,15 @@ public class LocalTimeUtil {
             dateTime = LocalDateTime.of(today, time);
         }
         return dateTime.atZone(systemTimeProvider.getZoneId()).toInstant();
+    }
+
+    public static LocalDateTime timeToDateTime(LocalTime time, SystemTimeProvider systemTimeProvider) {
+        LocalDateTime now = systemTimeProvider.nowDateTime();
+        if(time.isBefore(now.toLocalTime())) {
+            return LocalDateTime.of(now.plusDays(1).toLocalDate(), time);
+        } else {
+            return LocalDateTime.of(now.toLocalDate(), time);
+        }
     }
 
 }

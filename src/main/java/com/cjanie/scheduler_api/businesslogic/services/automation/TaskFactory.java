@@ -19,13 +19,13 @@ public class TaskFactory {
 
     private final ZoneId systemZoneId;
 
-    private TaskFactory(SystemZoneProvider systemZoneProvider) {
-        this.systemZoneId = systemZoneProvider.getZoneId();
+    private TaskFactory(ZoneId systemZoneId) {
+        this.systemZoneId = systemZoneId;
     }
 
-    public static TaskFactory getInstance(SystemZoneProvider systemZoneProvider) {
+    public static TaskFactory getInstance(ZoneId systemZoneId) {
         if(INSTANCE == null) {
-            INSTANCE = new TaskFactory(systemZoneProvider);
+            INSTANCE = new TaskFactory(systemZoneId);
         }
         return INSTANCE;
     }

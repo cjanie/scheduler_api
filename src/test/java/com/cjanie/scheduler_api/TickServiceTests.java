@@ -15,6 +15,7 @@ import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
+import com.cjanie.scheduler_api.businesslogic.services.TickServiceState;
 
 public class TickServiceTests {
 
@@ -26,7 +27,8 @@ public class TickServiceTests {
         TickService tickService = new TickService(
             new InMemoryTaskRepository(),
             deterministicTimeProvider,
-            new InMemoryRunTaskAPI(deterministicTimeProvider)
+            new InMemoryRunTaskAPI(deterministicTimeProvider),
+            new TickServiceState()
             );
         assertEquals(0, tickService.tick().size());
     }
@@ -45,7 +47,8 @@ public class TickServiceTests {
         TickService tickService = new TickService(
             taskRepository,
             new DeterministicTimeProvider(now),
-            new InMemoryRunTaskAPI(new DeterministicTimeProvider(now))
+            new InMemoryRunTaskAPI(new DeterministicTimeProvider(now)),
+            new TickServiceState()
             );
         assertEquals(2, tickService.tick().size());
         assertEquals(1, tickService.tick().size());
