@@ -74,7 +74,7 @@ public class DI {
 
     private RunTaskGateway runTaskGateway() {
         if(this.runTaskGateway == null) {
-            this.runTaskGateway = new InMemoryRunTaskAPI();
+            this.runTaskGateway = new InMemoryRunTaskAPI(this.systemTimeProvider());
         }
         return this.runTaskGateway;
     }

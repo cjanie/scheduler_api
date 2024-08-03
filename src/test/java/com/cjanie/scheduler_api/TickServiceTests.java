@@ -22,10 +22,11 @@ public class TickServiceTests {
     public void runsNothingWhenNoTaskAvailable() throws GatewayException {
         // Prépare
         LocalTime now = LocalTime.of(1, 0, 0);
+        DeterministicTimeProvider deterministicTimeProvider = new DeterministicTimeProvider(now);
         TickService tickService = new TickService(
             new InMemoryTaskRepository(),
-            new DeterministicTimeProvider(now),
-            new InMemoryRunTaskAPI()
+            deterministicTimeProvider,
+            new InMemoryRunTaskAPI(deterministicTimeProvider)
             );
         assertEquals(0, tickService.tick().size());
     }
@@ -44,7 +45,7 @@ public class TickServiceTests {
         TickService tickService = new TickService(
             taskRepository,
             new DeterministicTimeProvider(now),
-            new InMemoryRunTaskAPI()
+            new InMemoryRunTaskAPI(new DeterministicTimeProvider(now))
             );
         assertEquals(2, tickService.tick().size());
         assertEquals(1, tickService.tick().size());

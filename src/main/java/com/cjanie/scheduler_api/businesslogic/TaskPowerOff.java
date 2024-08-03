@@ -12,7 +12,7 @@ public class TaskPowerOff extends Task {
 
     @Override
     public void run(RunTaskGateway runTaskGateway) {
-        runTaskGateway.runTaskPowerOff();
+        runTaskGateway.runTaskPowerOff(this);
     }
     
 }
