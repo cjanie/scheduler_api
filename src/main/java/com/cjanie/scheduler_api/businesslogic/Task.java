@@ -2,9 +2,13 @@ package com.cjanie.scheduler_api.businesslogic;
 
 import java.time.LocalTime;
 
+import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
+
 public abstract class Task {
     
     private LocalTime triggerTime;
+
+    protected RunTaskGateway runTaskGateway;
 
     public Task(LocalTime triggerTime) {
         this.triggerTime = triggerTime;
@@ -18,6 +22,17 @@ public abstract class Task {
         this.triggerTime = runTime;
     }
 
-    abstract public void run();
+    public void setRunTaskGateway(RunTaskGateway runTaskGateway) {
+        this.runTaskGateway = runTaskGateway;
+    }
+
+
+    public void run() {
+        if(this.runTaskGateway != null) {
+            this.runSpecificCommand();
+        }
+    }
+
+    protected abstract void runSpecificCommand();
 
 }
