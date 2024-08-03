@@ -9,7 +9,7 @@ import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.GenericTimeProvider;
 
 public class TickService {
 
@@ -17,7 +17,7 @@ public class TickService {
 
     private Schedule schedule;
 
-    private TimeProvider timeProvider;
+    private GenericTimeProvider genericTimeProvider;
 
     private LocalTime tickTime;
 
@@ -25,10 +25,10 @@ public class TickService {
 
     public static final long DEFAULT_DELAY_MILLIS = 1000l;
 
-    public TickService(TaskRepository taskRepository, TimeProvider timeProvider, RunTaskGateway runTaskGateway) {
+    public TickService(TaskRepository taskRepository, GenericTimeProvider genericTimeProvider, RunTaskGateway runTaskGateway) {
         this.schedule = new Schedule(taskRepository);
-        this.timeProvider = timeProvider;
-        this.tickTime = this.schedule.getNextTriggerTime(this.timeProvider.now());
+        this.genericTimeProvider = genericTimeProvider;
+        this.tickTime = this.schedule.getNextTriggerTime(this.genericTimeProvider.now());
 
         this.runTaskGateway = runTaskGateway;
     }
@@ -47,7 +47,7 @@ public class TickService {
             this.tickTime = this.schedule.getNextTriggerTime(this.tickTime);
             return tasks;
         } else {
-            this.tickTime = this.schedule.getNextTriggerTime(this.timeProvider.now());
+            this.tickTime = this.schedule.getNextTriggerTime(this.genericTimeProvider.now());
             return new ArrayList<>();
         }
     }
@@ -60,7 +60,7 @@ public class TickService {
         if(this.tickTime != null) {
             return this.tickTime;
         }
-        return this.schedule.getNextTriggerTime(this.timeProvider.now());
+        return this.schedule.getNextTriggerTime(this.genericTimeProvider.now());
     }
 
 

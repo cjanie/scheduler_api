@@ -2,9 +2,9 @@ package com.cjanie.scheduler_api.adapters.secondary;
 
 import java.time.LocalTime;
 
-import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.GenericTimeProvider;
 
-public class DeterministicTimeProvider implements TimeProvider {
+public class DeterministicTimeProvider implements GenericTimeProvider {
 
     private LocalTime now;
 

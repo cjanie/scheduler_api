@@ -8,8 +8,8 @@ import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
-import com.cjanie.scheduler_api.businesslogic.gateways.ZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.GenericTimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.GenericZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
@@ -31,9 +31,9 @@ public class DI {
 
     private TaskRepository taskRepository;
 
-    private TimeProvider timeProvider;
+    private GenericTimeProvider timeProvider;
 
-    private ZoneProvider zoneProvider;
+    private GenericZoneProvider zoneProvider;
 
     private AutomationRepository automationRepository;
 
@@ -50,14 +50,14 @@ public class DI {
         return this.taskRepository;
     }
 
-    private TimeProvider timeProvider() {
+    private GenericTimeProvider genericTimeProvider() {
         if(this.timeProvider == null) {
-            this.timeProvider = new RealTimeProvider(this.zoneProvider());
+            this.timeProvider = new RealTimeProvider(this.genericZoneProvider());
         }
         return this.timeProvider;
     }
 
-    private ZoneProvider zoneProvider() {
+    private GenericZoneProvider genericZoneProvider() {
         if(this.zoneProvider == null) {
             this.zoneProvider = new SystemDefaultZoneProvider();
         }
@@ -82,7 +82,7 @@ public class DI {
         if(this.tickService == null) {
             this.tickService = new TickService(
                 this.taskRepository(), 
-                this.timeProvider(), 
+                this.genericTimeProvider(), 
                 this.runTaskGateway());
         }
         return this.tickService;
@@ -93,7 +93,7 @@ public class DI {
             this.addAutomationService = new AddAutomationService(
                 this.automationRepository(),
                 this.taskRepository(),
-                this.zoneProvider()
+                this.genericZoneProvider()
             );
         }
         return this.addAutomationService;

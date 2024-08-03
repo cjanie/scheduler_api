@@ -2,6 +2,7 @@ package com.cjanie.scheduler_api;
 
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
+import com.cjanie.scheduler_api.businesslogic.gateways.GenericZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
 public class AddAutomationServiceTests {
@@ -26,8 +28,9 @@ public class AddAutomationServiceTests {
     public void addAutomationWithSuccess() throws RepositoryException {
         AutomationRepository automationRepository = new InMemoryAutomationRepository();
         TaskRepository taskRepository = new InMemoryTaskRepository();
-        AddAutomationService addAutomationService = new AddAutomationService(automationRepository, taskRepository);
-        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), ZoneId.systemDefault());
+        GenericZoneProvider genericZoneProvider = new SystemDefaultZoneProvider();
+        AddAutomationService addAutomationService = new AddAutomationService(automationRepository, taskRepository, genericZoneProvider);
+        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), genericZoneProvider.getZoneId());
         long result = addAutomationService.add(automation);
         assertNotEquals(0, result);
 
