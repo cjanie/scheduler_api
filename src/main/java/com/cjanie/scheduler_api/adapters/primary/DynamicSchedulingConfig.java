@@ -21,6 +21,7 @@ import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
+import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
@@ -57,7 +58,11 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
         taskRegistrar.addTriggerTask(
             () -> {
-                tickService.tick();
+                try {
+                    tickService.tick();
+                } catch (GatewayException e) {
+                    e.printStackTrace();
+                }
             },
             (triggerContext) -> {
 

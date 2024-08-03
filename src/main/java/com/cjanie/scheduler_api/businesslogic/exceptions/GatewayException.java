@@ -1,5 +1,5 @@
 package com.cjanie.scheduler_api.businesslogic.exceptions;
 
-public class RepositoryException extends GatewayException {
+public class GatewayException extends Exception {
     
 }

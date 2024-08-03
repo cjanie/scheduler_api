@@ -2,13 +2,12 @@ package com.cjanie.scheduler_api.businesslogic;
 
 import java.time.LocalTime;
 
+import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 
 public abstract class Task {
     
     private LocalTime triggerTime;
-
-    protected RunTaskGateway runTaskGateway;
 
     public Task(LocalTime triggerTime) {
         this.triggerTime = triggerTime;
@@ -22,17 +21,5 @@ public abstract class Task {
         this.triggerTime = runTime;
     }
 
-    public void setRunTaskGateway(RunTaskGateway runTaskGateway) {
-        this.runTaskGateway = runTaskGateway;
-    }
-
-
-    public void run() {
-        if(this.runTaskGateway != null) {
-            this.runSpecificCommand();
-        }
-    }
-
-    protected abstract void runSpecificCommand();
-
+    public abstract void run(RunTaskGateway runTaskGateway) throws GatewayException;
 }

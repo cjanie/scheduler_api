@@ -2,6 +2,8 @@ package com.cjanie.scheduler_api.businesslogic;
 
 import java.time.LocalTime;
 
+import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
+
 public class TaskPowerOff extends Task {
 
     public TaskPowerOff(LocalTime triggerTime) {
@@ -9,8 +11,8 @@ public class TaskPowerOff extends Task {
     }
 
     @Override
-    public void runSpecificCommand() {
-        this.runTaskGateway.runTaskPowerOff();
+    public void run(RunTaskGateway runTaskGateway) {
+        runTaskGateway.runTaskPowerOff();
     }
     
 }
