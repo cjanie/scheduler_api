@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class AddAutomationServiceTests {
         AutomationRepository automationRepository = new InMemoryAutomationRepository();
         TaskRepository taskRepository = new InMemoryTaskRepository();
         AddAutomationService addAutomationService = new AddAutomationService(automationRepository, taskRepository);
-        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0));
+        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), ZoneId.systemDefault());
         long result = addAutomationService.add(automation);
         assertNotEquals(0, result);
 

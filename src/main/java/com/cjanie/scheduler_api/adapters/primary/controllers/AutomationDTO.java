@@ -1,6 +1,7 @@
 package com.cjanie.scheduler_api.adapters.primary.controllers;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,9 +14,12 @@ public class AutomationDTO {
     @JsonFormat(pattern = "hh:mm:ss")
     private LocalTime powerOffTime;
 
-    public AutomationDTO(LocalTime powerOnTime, LocalTime powerOffTime) {
+    private String zoneId;
+
+    public AutomationDTO(LocalTime powerOnTime, LocalTime powerOffTime, String zoneId) {
         this.powerOnTime = powerOnTime;
         this.powerOffTime = powerOffTime;
+        this.zoneId = zoneId;
     }
 
     public LocalTime getPowerOnTime() {
@@ -36,8 +40,9 @@ public class AutomationDTO {
 
     public Automation createAutomation() {
         Automation automation = new Automation(
-                this.getPowerOnTime(),
-                this.getPowerOffTime()
+                this.powerOnTime,
+                this.powerOffTime,
+                ZoneId.of(this.zoneId)
                 );
         return automation;
     }

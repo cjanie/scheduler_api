@@ -1,6 +1,10 @@
 package com.cjanie.scheduler_api.businesslogic;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class Automation {
@@ -9,9 +13,12 @@ public class Automation {
 
     private LocalTime powerOffTime;
 
-    public Automation(LocalTime powerOnTime, LocalTime powerOffTime) {
+    private ZoneId zoneId;
+
+    public Automation(LocalTime powerOnTime, LocalTime powerOffTime, ZoneId zoneId) {
         this.powerOnTime = powerOnTime;
         this.powerOffTime = powerOffTime;
+        this.zoneId = zoneId;
     }
 
     public LocalTime getPowerOnTime() {
@@ -30,11 +37,14 @@ public class Automation {
         this.powerOffTime = powerOffTime;
     }
 
-    public List<Task> createTasks() {
-        return List.of(
-            new TaskPowerOn(this.powerOnTime),
-            new TaskPowerOff(this.powerOffTime)
-        );
+
+    public ZoneId getZoneId() {
+        return this.zoneId;
     }
+
+    public void setZoneId(ZoneId zoneId) {
+        this.zoneId = zoneId;
+    }
+
 
 }

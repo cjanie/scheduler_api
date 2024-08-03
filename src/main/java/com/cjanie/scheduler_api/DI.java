@@ -4,12 +4,15 @@ import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryRunTaskAPI;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
+import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.ZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
+
 
 public class DI {
 
@@ -30,6 +33,8 @@ public class DI {
 
     private TimeProvider timeProvider;
 
+    private ZoneProvider zoneProvider;
+
     private AutomationRepository automationRepository;
 
     private RunTaskGateway runTaskGateway;
@@ -47,9 +52,16 @@ public class DI {
 
     private TimeProvider timeProvider() {
         if(this.timeProvider == null) {
-            this.timeProvider = new RealTimeProvider();
+            this.timeProvider = new RealTimeProvider(this.zoneProvider());
         }
         return this.timeProvider;
+    }
+
+    private ZoneProvider zoneProvider() {
+        if(this.zoneProvider == null) {
+            this.zoneProvider = new SystemDefaultZoneProvider();
+        }
+        return this.zoneProvider;
     }
 
     private AutomationRepository automationRepository() {
@@ -80,7 +92,8 @@ public class DI {
         if(this.addAutomationService == null) {
             this.addAutomationService = new AddAutomationService(
                 this.automationRepository(),
-                this.taskRepository()
+                this.taskRepository(),
+                this.zoneProvider()
             );
         }
         return this.addAutomationService;
