@@ -11,21 +11,21 @@ import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 
 public class TaskFactory {
 
     private static TaskFactory INSTANCE;
 
-    private final ZoneId genericZoneId;
+    private final ZoneId systemZoneId;
 
-    private TaskFactory(GenericZoneProvider globalZoneProvider) {
-        this.genericZoneId = globalZoneProvider.getZoneId();
+    private TaskFactory(SystemZoneProvider systemZoneProvider) {
+        this.systemZoneId = systemZoneProvider.getZoneId();
     }
 
-    public static TaskFactory getInstance(GenericZoneProvider genericZoneProvider) {
+    public static TaskFactory getInstance(SystemZoneProvider systemZoneProvider) {
         if(INSTANCE == null) {
-            INSTANCE = new TaskFactory(genericZoneProvider);
+            INSTANCE = new TaskFactory(systemZoneProvider);
         }
         return INSTANCE;
     }
@@ -43,7 +43,7 @@ public class TaskFactory {
         LocalDate today = LocalDate.now();
         LocalDateTime dateTime = LocalDateTime.of(today, localTime);
         ZonedDateTime zonedDateTime = dateTime.atZone(zoneId);
-        ZonedDateTime refDateTime = zonedDateTime.withZoneSameInstant(this.genericZoneId);
+        ZonedDateTime refDateTime = zonedDateTime.withZoneSameInstant(this.systemZoneId);
         return refDateTime.toLocalTime();
     }
     

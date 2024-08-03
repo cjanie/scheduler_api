@@ -5,11 +5,12 @@ import com.cjanie.scheduler_api.adapters.secondary.InMemoryRunTaskAPI;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
+import com.cjanie.scheduler_api.adapters.secondary.UTCZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericTimeProvider;
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
@@ -31,9 +32,9 @@ public class DI {
 
     private TaskRepository taskRepository;
 
-    private GenericTimeProvider timeProvider;
+    private SystemTimeProvider systemTimeProvider;
 
-    private GenericZoneProvider zoneProvider;
+    private SystemZoneProvider systemZoneProvider;
 
     private AutomationRepository automationRepository;
 
@@ -50,18 +51,18 @@ public class DI {
         return this.taskRepository;
     }
 
-    private GenericTimeProvider genericTimeProvider() {
-        if(this.timeProvider == null) {
-            this.timeProvider = new RealTimeProvider(this.genericZoneProvider());
+    public SystemTimeProvider systemTimeProvider() {
+        if(this.systemTimeProvider == null) {
+            this.systemTimeProvider = new RealTimeProvider(this.systemZoneProvider());
         }
-        return this.timeProvider;
+        return this.systemTimeProvider;
     }
 
-    private GenericZoneProvider genericZoneProvider() {
-        if(this.zoneProvider == null) {
-            this.zoneProvider = new SystemDefaultZoneProvider();
+    private SystemZoneProvider systemZoneProvider() {
+        if(this.systemZoneProvider == null) {
+            this.systemZoneProvider = new SystemDefaultZoneProvider();
         }
-        return this.zoneProvider;
+        return this.systemZoneProvider;
     }
 
     private AutomationRepository automationRepository() {
@@ -82,7 +83,7 @@ public class DI {
         if(this.tickService == null) {
             this.tickService = new TickService(
                 this.taskRepository(), 
-                this.genericTimeProvider(), 
+                this.systemTimeProvider(), 
                 this.runTaskGateway());
         }
         return this.tickService;
@@ -93,7 +94,7 @@ public class DI {
             this.addAutomationService = new AddAutomationService(
                 this.automationRepository(),
                 this.taskRepository(),
-                this.genericZoneProvider()
+                this.systemZoneProvider()
             );
         }
         return this.addAutomationService;

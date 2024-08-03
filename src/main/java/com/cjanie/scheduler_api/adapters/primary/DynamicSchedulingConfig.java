@@ -23,7 +23,7 @@ import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericTimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.services.TickService;
 import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
@@ -36,6 +36,8 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
     private static String TAG = DynamicSchedulingConfig.class.getName();
 
+    private SystemTimeProvider systemTimeProvider;
+
     private TickService tickService;
 
     @Bean
@@ -45,7 +47,9 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
 
     // Constructor
     public DynamicSchedulingConfig() {
-        this.tickService = DI.getInstance().tickService();
+        DI di = DI.getInstance();
+        this.systemTimeProvider = di.systemTimeProvider();
+        this.tickService = di.tickService();
     }
 
 
@@ -69,10 +73,14 @@ public class DynamicSchedulingConfig implements SchedulingConfigurer {
                 LocalTime nextTickTime = this.tickService.getNextTickTime();
                 Instant nextExcecution;
                 if(nextTickTime != null) {
-                    nextExcecution = LocalTimeUtil.convertLocalTimeToInstant(nextTickTime);
+                    nextExcecution = LocalTimeUtil.convertLocalTimeToInstant(nextTickTime, this.systemTimeProvider);
                     System.out.println("LOG " + TAG + " : next Excecution time = " + nextTickTime);
                 } else {
-                    nextExcecution = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().plusMillis(this.tickService.getDefaultDelayMillis());
+                    nextExcecution = this.systemTimeProvider
+                        .nowDateTime()
+                        .atZone(this.systemTimeProvider.getZoneId())
+                        .toInstant()
+                        .plusMillis(this.tickService.getDefaultDelayMillis());
                     System.out.println("LOG " + TAG + " : next Excecution delay = " + this.tickService.getDefaultDelayMillis());
                 }
                 

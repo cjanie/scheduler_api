@@ -1,14 +1,13 @@
 package com.cjanie.scheduler_api.businesslogic.utils;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 
 public class LocalTimeUtil {
     
@@ -47,33 +46,20 @@ public class LocalTimeUtil {
         return null;
     }
 
-    public static Duration getDuration(LocalTime start, LocalTime end) {
-        Duration duration;
-            if(end.isBefore(start)) {
-                LocalDate today = LocalDate.now();
-                LocalDateTime actualDateTime = LocalDateTime.of(today, start);
-                LocalDateTime nextDateTime = LocalDateTime.of(today.plusDays(1), end); 
-                duration = Duration.between(actualDateTime, nextDateTime);
-            } else {
-                duration = Duration.between(start, end);
-            }
-            return duration;
-    }
-
     public static LocalTime convertInstantToLocalTime(Instant instant) {
         return LocalDateTimeUtil.convertInstantToLocalDateTime(instant).toLocalTime();
     }
 
-    public static Instant convertLocalTimeToInstant(LocalTime time) {
-        LocalTime now = LocalTime.now();
+    public static Instant convertLocalTimeToInstant(LocalTime time, SystemTimeProvider systemTimeProvider) {
+        LocalTime now = systemTimeProvider.now();
         LocalDateTime dateTime;
-        LocalDate today = LocalDate.now();
+        LocalDate today = systemTimeProvider.today();
         if(time.isBefore(now)) {
             dateTime = LocalDateTime.of(today.plusDays(1), time);
         } else {
             dateTime = LocalDateTime.of(today, time);
         }
-        return dateTime.atZone(ZoneId.systemDefault()).toInstant();
+        return dateTime.atZone(systemTimeProvider.getZoneId()).toInstant();
     }
 
 }

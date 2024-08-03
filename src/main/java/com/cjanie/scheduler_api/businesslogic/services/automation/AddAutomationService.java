@@ -1,20 +1,10 @@
 package com.cjanie.scheduler_api.businesslogic.services.automation;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.List;
-
 import com.cjanie.scheduler_api.businesslogic.Automation;
-import com.cjanie.scheduler_api.businesslogic.Task;
-import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
-import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 
 public class AddAutomationService {
 
@@ -25,11 +15,11 @@ public class AddAutomationService {
     public AddAutomationService(
         AutomationRepository automationRepository, 
         TaskRepository taskRepository, 
-        GenericZoneProvider genericZoneProvider
+        SystemZoneProvider systemZoneProvider
         ) {
         this.automationRepository = automationRepository;
         this.taskRepository = taskRepository;
-        this.taskFactory = TaskFactory.getInstance(genericZoneProvider);
+        this.taskFactory = TaskFactory.getInstance(systemZoneProvider);
     }
 
     public long add(Automation automation) throws RepositoryException {

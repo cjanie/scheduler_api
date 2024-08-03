@@ -1,23 +1,41 @@
 package com.cjanie.scheduler_api.adapters.secondary;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericTimeProvider;
-import com.cjanie.scheduler_api.businesslogic.gateways.GenericZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 
-public class RealTimeProvider implements GenericTimeProvider {
+public class RealTimeProvider implements SystemTimeProvider {
 
-    private GenericZoneProvider zoneProvider;
+    private SystemZoneProvider zoneProvider;
 
 
-    public RealTimeProvider(GenericZoneProvider zoneProvider) {
+    public RealTimeProvider(SystemZoneProvider zoneProvider) {
         this.zoneProvider = zoneProvider;
     }
 
 
     @Override
     public LocalTime now() {
-        return LocalTime.now(this.zoneProvider.getZoneId());
+        return LocalTime.now(this.getZoneId());
     }
     
+
+    @Override
+    public ZoneId getZoneId() {
+        return this.zoneProvider.getZoneId();
+    }
+
+    @Override
+    public LocalDate today() {
+        return LocalDate.now(this.getZoneId());
+    }
+
+    @Override
+    public LocalDateTime nowDateTime() {
+        return LocalDateTime.now(this.getZoneId());
+    }
 }
