@@ -4,21 +4,38 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
+import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
+import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
+import com.cjanie.scheduler_api.businesslogic.services.automation.TaskFactory;
 import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
 public class Schedule {
 
-    private TaskRepository taskRepository;
+    private AutomationRepository automationRepository;
 
-    public Schedule(TaskRepository taskRepository) {
-       this.taskRepository = taskRepository;
+    private SystemTimeProvider timeProvider;
+
+    private TaskFactory taskFactory;
+
+    public Schedule(AutomationRepository automationRepository, SystemTimeProvider timeProvider) {
+       this.automationRepository = automationRepository;
+       this.timeProvider = timeProvider;
+       this.taskFactory = TaskFactory.getInstance(this.timeProvider.getZoneId());
+    }
+
+    public List<Task> getAllTasks() throws RepositoryException {
+        List<Automation> automations = this.automationRepository.get();
+        return this.taskFactory.createTasks(automations);
     }
     
-    public List<Task> filterTasksByTriggerTime(LocalTime triggerTime) {
+    public List<Task> filterTasksByTriggerTime(LocalTime triggerTime) throws RepositoryException {
+    
+        List<Task> allTasks = getAllTasks();
+        
         List<Task> filteredTasks = new ArrayList<>();
-        if(!this.taskRepository.getTasks().isEmpty()) {
-            for (Task task: this.taskRepository.getTasks()) {
+        if(!allTasks.isEmpty()) {
+            for (Task task: allTasks) {
                 if (task.getTriggerTime().getHour() == triggerTime.getHour() && 
                     task.getTriggerTime().getMinute() == triggerTime.getMinute() &&
                     task.getTriggerTime().getSecond() == triggerTime.getSecond()
@@ -30,12 +47,12 @@ public class Schedule {
         return filteredTasks;
     }
 
-    public LocalTime getNextTriggerTime(LocalTime lastTriggerTime) {
-        List<Task> tasks = this.taskRepository.getTasks();
-        if(!tasks.isEmpty()) {
+    public LocalTime getNextTriggerTime(LocalTime lastTriggerTime) throws RepositoryException {
+        List<Task> allTasks = this.getAllTasks();
+        if(!allTasks.isEmpty()) {
             List<LocalTime> triggerTimes = new ArrayList<>();
 
-            for (Task task: tasks) {
+            for (Task task: allTasks) {
                 triggerTimes.add(task.getTriggerTime());
             }
             return LocalTimeUtil.getNextTime(lastTriggerTime, triggerTimes);

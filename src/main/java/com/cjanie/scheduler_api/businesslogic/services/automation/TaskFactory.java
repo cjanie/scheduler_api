@@ -5,13 +5,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
-import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
+import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
 public class TaskFactory {
 
@@ -30,21 +31,23 @@ public class TaskFactory {
         return INSTANCE;
     }
 
-    public List<Task> createTasks(Automation automation) {
-        LocalTime powerOnGenericTime = this.convertToGenericZoneTime(automation.getPowerOnTime(), automation.getZoneId());
-        LocalTime powerOffGenericTime = this.convertToGenericZoneTime(automation.getPowerOffTime(), automation.getZoneId());
-        return List.of(
-            new TaskPowerOn(powerOnGenericTime),
-            new TaskPowerOff(powerOffGenericTime)
-        );
+    public List<Task> createTasks(List<Automation> automations) {
+        List<Task> tasks = new ArrayList<>();
+        if(!automations.isEmpty()) {
+            for(Automation automation: automations) {
+                tasks.addAll(this.createTasks(automation));
+            }
+        }
+        return tasks;
     }
 
-    private LocalTime convertToGenericZoneTime(LocalTime localTime, ZoneId zoneId) {
-        LocalDate today = LocalDate.now();
-        LocalDateTime dateTime = LocalDateTime.of(today, localTime);
-        ZonedDateTime zonedDateTime = dateTime.atZone(zoneId);
-        ZonedDateTime refDateTime = zonedDateTime.withZoneSameInstant(this.systemZoneId);
-        return refDateTime.toLocalTime();
+    public List<Task> createTasks(Automation automation) {
+        LocalTime powerOnTime = LocalTimeUtil.convertToSystemTime(automation.getPowerOnTime(), automation.getZoneId(), this.systemZoneId);
+        LocalTime powerOffTime = LocalTimeUtil.convertToSystemTime(automation.getPowerOffTime(), automation.getZoneId(), this.systemZoneId);
+        return List.of(
+            new TaskPowerOn(powerOnTime),
+            new TaskPowerOff(powerOffTime)
+        );
     }
     
 }

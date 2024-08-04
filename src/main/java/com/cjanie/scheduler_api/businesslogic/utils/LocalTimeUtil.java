@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,14 @@ public class LocalTimeUtil {
         } else {
             return LocalDateTime.of(now.toLocalDate(), time);
         }
+    }
+
+    public static LocalTime convertToSystemTime(LocalTime localTime, ZoneId zoneId, ZoneId systemZoneId) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.of(today, localTime);
+        ZonedDateTime zonedDateTime = dateTime.atZone(zoneId);
+        ZonedDateTime refDateTime = zonedDateTime.withZoneSameInstant(systemZoneId);
+        return refDateTime.toLocalTime();
     }
 
 }

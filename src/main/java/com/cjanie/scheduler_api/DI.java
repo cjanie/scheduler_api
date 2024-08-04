@@ -5,14 +5,11 @@ import com.cjanie.scheduler_api.adapters.secondary.InMemoryRunTaskAPI;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
-import com.cjanie.scheduler_api.adapters.secondary.UTCZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
-import com.cjanie.scheduler_api.businesslogic.services.TickService;
-import com.cjanie.scheduler_api.businesslogic.services.TickServiceState;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
 
 
@@ -40,10 +37,6 @@ public class DI {
     private AutomationRepository automationRepository;
 
     private RunTaskGateway runTaskGateway;
-
-    private TickService tickService;
-
-    private TickServiceState tickServiceState;
 
     private AddAutomationService addAutomationService;
 
@@ -82,33 +75,10 @@ public class DI {
         return this.runTaskGateway;
     }
 
-    public TickService tickService() {
-        if(this.tickService == null) {
-            this.tickService = new TickService(
-                this.taskRepository(), 
-                this.systemTimeProvider(), 
-                this.runTaskGateway(),
-                this.tickServiceState()
-                );
-        }
-        return this.tickService;
-    }
-
-    public TickServiceState tickServiceState() {
-        if(this.tickServiceState == null) {
-            this.tickServiceState = new TickServiceState();
-        }
-        return this.tickServiceState;
-    }
-
     public AddAutomationService addAutomationService() {
         if(this.addAutomationService == null) {
             this.addAutomationService = new AddAutomationService(
-                this.automationRepository(),
-                this.taskRepository(),
-                this.systemTimeProvider(),
-                this.tickServiceState(),
-                this.runTaskGateway()
+                this.automationRepository()
             );
         }
         return this.addAutomationService;

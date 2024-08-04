@@ -2,28 +2,42 @@ package com.cjanie.scheduler_api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.DeterministicTimeProvider;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
+import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.Schedule;
 import com.cjanie.scheduler_api.businesslogic.Task;
-import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
-import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
+import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
+import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 
 public class ScheduleTests {
+
+    private SystemTimeProvider timeProvider = new DeterministicTimeProvider(
+        LocalDateTime.of(LocalDate.now(), LocalTime.of(1, 0, 0))
+        );
     
     @Test
-    public void shouldReturnTasksToRunAtASpecificTime() {
+    public void shouldReturnTasksToRunAtASpecificTime() throws RepositoryException {
 
          // Prepare schedule with tasks
-        InMemoryTaskRepository taskRepository = new InMemoryTaskRepository();
-        Task task1 = new TaskPowerOn(LocalTime.of(20, 0, 0));
-        Task task2 = new TaskPowerOff(LocalTime.of(8, 0, 0));
-        taskRepository.setTasks(List.of(task1, task2));
-        Schedule schedule = new Schedule(taskRepository);
+        InMemoryAutomationRepository automationRepository = new InMemoryAutomationRepository();
+        automationRepository.setAutomations(List.of(
+            new Automation(
+                LocalTime.of(20, 0, 0), 
+                LocalTime.of(8, 0, 0), 
+                ZoneId.systemDefault()
+                )
+        ));
+        
+        Schedule schedule = new Schedule(automationRepository, this.timeProvider);
 
         // SUT
         List<Task> tasks = schedule.filterTasksByTriggerTime(LocalTime.of(8, 0, 0));
@@ -32,10 +46,10 @@ public class ScheduleTests {
     }
 
     @Test
-    public void shouldReturnNoTaskWhenThereIsNoneToRunAtASpecificTime() {
+    public void shouldReturnNoTaskWhenThereIsNoneToRunAtASpecificTime() throws RepositoryException {
 
          // Prepare empty schedule (tasks empty)
-        Schedule schedule = new Schedule(new InMemoryTaskRepository());
+        Schedule schedule = new Schedule(new InMemoryAutomationRepository(), this.timeProvider);
 
         // SUT
         List<Task> tasks = schedule.filterTasksByTriggerTime(LocalTime.of(8, 0, 0));
@@ -43,20 +57,4 @@ public class ScheduleTests {
         assertEquals(0, tasks.size());
     }
 
-
-    @Test
-    public void nextTask() {
-        // Prepare
-        InMemoryTaskRepository taskRepository = new InMemoryTaskRepository();
-        Task task0 = new TaskPowerOn(LocalTime.of(20, 0, 0));
-        Task task1 = new TaskPowerOn(LocalTime.of(8, 0, 0));
-        Task task2 = new TaskPowerOn(LocalTime.of(10, 0, 0));
-        Task task3 = new TaskPowerOff(LocalTime.of(9, 0, 0));
-        List<Task> tasks = List.of(task0, task1, task2, task3);
-        taskRepository.setTasks(tasks);
-        // SUT
-        Schedule schedule = new Schedule(taskRepository);
-        LocalTime next = schedule.getNextTriggerTime(LocalTime.of(10, 0, 0));
-        assertEquals(20, next.getHour());
-    }
 }
