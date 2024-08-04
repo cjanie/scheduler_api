@@ -73,21 +73,22 @@ public class AddAutomationService {
 
                     Date triggerDate = Date.from(triggerDateTime.atZone(this.systemTimeProvider.getZoneId()).toInstant());
 
+                    Timer timer = new Timer();
                     TimerTask timerTask = new TimerTask() {
                         @Override
                         public void run() {
                             try {
                                 task.run(runTaskGateway);
+                                
                             } catch (GatewayException e) {
                                 e.printStackTrace();
                             }
                             
                         }
                     };
-                    Timer timer = new Timer();
+                    
                     timer.schedule(timerTask, triggerDate);
-                    timerTaskMapping.put(timer, timerTask);
-
+                    this.timerTaskMapping.put(timer, timerTask);
                 }
             }
         }
