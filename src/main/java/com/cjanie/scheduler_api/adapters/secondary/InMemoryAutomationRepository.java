@@ -22,7 +22,12 @@ public class InMemoryAutomationRepository implements AutomationRepository {
         return this.automations.size();
     }
 
-    public List<Automation> getAutomations() {
+    @Override
+    public List<Automation> get() throws RepositoryException {
         return this.automations;
+    }
+
+    public void setAutomations(List<Automation> automations) {
+        this.automations = automations;
     }
 }
