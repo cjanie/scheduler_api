@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
@@ -72,6 +73,11 @@ public class LocalTimeUtil {
         } else {
             return LocalDateTime.of(now.toLocalDate(), time);
         }
+    }
+
+    public static Date timeToDate(LocalTime time, SystemTimeProvider systemTimeProvider) {
+        LocalDateTime localDateTime = LocalTimeUtil.timeToDateTime(time, systemTimeProvider);
+        return Date.from(localDateTime.atZone(systemTimeProvider.getZoneId()).toInstant());
     }
 
     public static LocalTime convertToSystemTime(LocalTime localTime, ZoneId zoneId, ZoneId systemZoneId) {
