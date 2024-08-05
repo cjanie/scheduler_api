@@ -11,6 +11,8 @@ import com.cjanie.scheduler_api.businesslogic.gateways.TimerTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
+import com.cjanie.scheduler_api.businesslogic.services.automation.GetAutomationsService;
+import com.cjanie.scheduler_api.businesslogic.services.timertask.ScheduleTimerTaskService;
 
 
 public class DI {
@@ -28,6 +30,10 @@ public class DI {
     private RunTaskGateway runTaskGateway;
 
     private AddAutomationService addAutomationService;
+
+    private GetAutomationsService getAutomationsService;
+
+    private ScheduleTimerTaskService scheduleTimerTaskService;
 
     private DI() {
 
@@ -78,14 +84,27 @@ public class DI {
 
     public AddAutomationService addAutomationService() {
         if(this.addAutomationService == null) {
-            this.addAutomationService = new AddAutomationService(
-                this.automationRepository(),
+            this.addAutomationService = new AddAutomationService(this.automationRepository());
+        }
+        return this.addAutomationService;
+    }
+
+    public GetAutomationsService getAutomationsService() {
+        if(this.getAutomationsService == null) {
+            this.getAutomationsService = new GetAutomationsService(this.automationRepository());
+        }
+        return this.getAutomationsService;
+    }
+
+    public ScheduleTimerTaskService scheduleTimerTaskService() {
+        if(this.scheduleTimerTaskService == null) {
+            this.scheduleTimerTaskService = new ScheduleTimerTaskService(
                 this.systemTimeProvider(),
                 this.runTaskGateway(),
                 this.timerTaskRepository()
             );
         }
-        return this.addAutomationService;
+        return this.scheduleTimerTaskService;
     }
     
 }

@@ -1,4 +1,4 @@
-package com.cjanie.scheduler_api.businesslogic.services.automation;
+package com.cjanie.scheduler_api.businesslogic.factories;
 
 import java.time.LocalTime;
 import java.time.ZoneId;

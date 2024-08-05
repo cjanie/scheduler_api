@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
+import com.cjanie.scheduler_api.businesslogic.IdentifiedTimerTask;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimerTaskRepository;
-import com.cjanie.scheduler_api.businesslogic.services.automation.IdentifiedTimerTask;
 
 public class InMemoryTimerTaskRepository implements TimerTaskRepository {
 

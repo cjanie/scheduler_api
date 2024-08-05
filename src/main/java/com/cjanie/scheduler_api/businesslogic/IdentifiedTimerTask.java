@@ -1,9 +1,7 @@
-package com.cjanie.scheduler_api.businesslogic.services.automation;
+package com.cjanie.scheduler_api.businesslogic;
 
-import java.util.List;
 import java.util.TimerTask;
 
-import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 
@@ -11,13 +9,13 @@ public class IdentifiedTimerTask extends TimerTask {
 
     private long automationId;
 
-    private List<Task> tasks;
+    private Task task;
 
     private RunTaskGateway runTaskGateway;
 
-    public IdentifiedTimerTask(long automationId, List<Task> tasks, RunTaskGateway runTaskGateway) {
+    public IdentifiedTimerTask(long automationId, Task task, RunTaskGateway runTaskGateway) {
         this.automationId = automationId;
-        this.tasks = tasks;
+        this.task = task;
         this.runTaskGateway = runTaskGateway;
     }
 
@@ -28,10 +26,8 @@ public class IdentifiedTimerTask extends TimerTask {
     @Override
     public void run() {
         try {
+            task.run(this.runTaskGateway);
             
-            for (Task task: this.tasks) {
-                task.run(this.runTaskGateway);
-            }
         } catch (GatewayException e) {
             // TODO handle the task that have failed
             e.printStackTrace();
