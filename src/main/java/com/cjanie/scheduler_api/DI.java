@@ -4,6 +4,7 @@ import com.cjanie.scheduler_api.adapters.primary.TasksTimer;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryRunTaskAPI;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
+import com.cjanie.scheduler_api.adapters.secondary.InMemoryTimerTaskRepository;
 import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.Schedule;
@@ -11,6 +12,7 @@ import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimerGateway;
+import com.cjanie.scheduler_api.businesslogic.gateways.TimerTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
@@ -46,6 +48,8 @@ public class DI {
     private Schedule schedule;
 
     private TimerGateway timerGateway;
+
+    private TimerTaskRepository timerTaskRepository;
 
     private TaskRepository taskRepository() {
         if (this.taskRepository == null) {
@@ -89,7 +93,8 @@ public class DI {
                 this.systemTimeProvider(),
                 this.timerGateway(),
                 this.runTaskGateway(),
-                this.schedule()
+                this.schedule(),
+                this.timerTaskRepository()
             );
         }
         return this.addAutomationService;
@@ -107,6 +112,13 @@ public class DI {
             this.timerGateway = new TasksTimer(this.systemTimeProvider());
         }
         return this.timerGateway;
+    }
+
+    private TimerTaskRepository timerTaskRepository() {
+        if (this.timerTaskRepository == null) {
+            this.timerTaskRepository = new InMemoryTimerTaskRepository();
+        }
+        return this.timerTaskRepository;
     }
 
     

@@ -88,4 +88,10 @@ public class LocalTimeUtil {
         return refDateTime.toLocalTime();
     }
 
+    public static boolean isTheSameTime(LocalTime time, LocalTime otherTime) {
+        return time.getHour() == otherTime.getHour() 
+            && time.getMinute() == otherTime.getMinute() 
+            && time.getSecond() == otherTime.getSecond();
+    }
+
 }
