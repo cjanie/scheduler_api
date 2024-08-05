@@ -5,6 +5,8 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import com.cjanie.scheduler_api.businesslogic.Device;
+import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOff;
 import com.cjanie.scheduler_api.businesslogic.TaskPowerOn;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
@@ -22,13 +24,30 @@ public class InMemoryRunTaskAPI implements RunTaskGateway {
     private static String TAG = InMemoryRunTaskAPI.class.getName(); 
     @Override
     public void runTaskPowerOn(TaskPowerOn task) {
-        System.out.println(TAG + " - At UTC " + toUTC(this.systemTimeProvider.now()) + " : run task power on () sheduled at UTC " + this.toUTC(task.getTriggerTime()));
+        System.out.println(
+            "LOG from " + TAG 
+            + " \n - At UTC " + toUTC(this.systemTimeProvider.now()) 
+            + " : run power ON sheduled at UTC " + this.toUTC(task.getTriggerTime())
+            + " \n - devices addresses : " + this.getDevicesAddresses(task)
+            );
     }
 
     @Override
     public void runTaskPowerOff(TaskPowerOff task) {
-        System.out.println(TAG + " - At UTC " + toUTC(this.systemTimeProvider.now()) + " : run task power off () sheduled at UTC " + this.toUTC(task.getTriggerTime()));
-    
+        System.out.println(
+            "LOG from " + TAG 
+            + " \n - At UTC " + toUTC(this.systemTimeProvider.now()) 
+            + " : run power OFF sheduled at UTC " + this.toUTC(task.getTriggerTime())
+            + " \n - devices addresses : " + this.getDevicesAddresses(task)
+            );
+    }
+
+    private String getDevicesAddresses(Task task) {
+        String devicesAddresses = "";
+        for (Device device: task.getDevices()) {
+            devicesAddresses += device.getAddress() + ", ";
+        }
+        return devicesAddresses;
     }
 
     private LocalTime toUTC(LocalTime localTime) {

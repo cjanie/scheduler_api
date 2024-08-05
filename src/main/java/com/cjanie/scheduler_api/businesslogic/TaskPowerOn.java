@@ -1,13 +1,14 @@
 package com.cjanie.scheduler_api.businesslogic;
 
 import java.time.LocalTime;
+import java.util.Set;
 
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 
 public class TaskPowerOn extends Task {
 
-    public TaskPowerOn(LocalTime triggerTime) {
-        super(triggerTime);
+    public TaskPowerOn(Set<Device> devices, LocalTime triggerTime) {
+        super(devices, triggerTime);
     }
 
     @Override

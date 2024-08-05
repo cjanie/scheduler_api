@@ -1,11 +1,13 @@
 package com.cjanie.scheduler_api;
 
+import com.cjanie.scheduler_api.businesslogic.Device;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Timer;
 
@@ -38,7 +40,7 @@ public class ScheduleTimerServiceTests {
             new InMemoryRunTaskAPI(this.timeProvider),
             timerTaskRepository
             );        
-        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), ZoneId.of("UTC"));
+        Automation automation = new Automation(new HashSet<Device>(), LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), ZoneId.of("UTC"));
         automation.setId(1l);
         // SUT
         scheduleTimerTaskService.sheduleTimer(automation);

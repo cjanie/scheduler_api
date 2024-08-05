@@ -42,8 +42,8 @@ public class TaskFactory {
         LocalTime powerOnTime = LocalTimeUtil.convertToSystemTime(automation.getPowerOnTime(), automation.getZoneId(), this.systemZoneId);
         LocalTime powerOffTime = LocalTimeUtil.convertToSystemTime(automation.getPowerOffTime(), automation.getZoneId(), this.systemZoneId);
         return List.of(
-            new TaskPowerOn(powerOnTime),
-            new TaskPowerOff(powerOffTime)
+            new TaskPowerOn(automation.getDevices(), powerOnTime),
+            new TaskPowerOff(automation.getDevices(), powerOffTime)
         );
     }
     

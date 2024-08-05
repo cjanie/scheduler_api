@@ -2,10 +2,12 @@ package com.cjanie.scheduler_api;
 
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
 
+import com.cjanie.scheduler_api.businesslogic.Device;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,7 @@ public class AddAutomationServiceTests {
         AutomationRepository automationRepository = new InMemoryAutomationRepository();
 
         AddAutomationService addAutomationService = new AddAutomationService(automationRepository);        
-        Automation automation = new Automation(LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), ZoneId.of("UTC"));
+        Automation automation = new Automation(new HashSet<Device>(), LocalTime.of(1, 0, 0), LocalTime.of(2, 0, 0), ZoneId.of("UTC"));
 
         long automationResult = addAutomationService.add(automation);
         assertNotEquals(0, automationResult);

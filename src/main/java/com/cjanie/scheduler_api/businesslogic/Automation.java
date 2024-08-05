@@ -2,10 +2,13 @@ package com.cjanie.scheduler_api.businesslogic;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Set;
 
 public class Automation {
 
     private Long id;
+
+    private Set<Device> devices;
 
     private LocalTime powerOnTime;
 
@@ -13,7 +16,8 @@ public class Automation {
 
     private ZoneId zoneId;
 
-    public Automation(LocalTime powerOnTime, LocalTime powerOffTime, ZoneId zoneId) {
+    public Automation(Set<Device> devices, LocalTime powerOnTime, LocalTime powerOffTime, ZoneId zoneId) {
+        this.devices = devices;
         this.powerOnTime = powerOnTime;
         this.powerOffTime = powerOffTime;
         this.zoneId = zoneId;
@@ -27,6 +31,16 @@ public class Automation {
     public void setId(Long id) {
         this.id = id;
     }
+
+
+    public Set<Device> getDevices() {
+        return this.devices;
+    }
+
+    public void setDevices(Set<Device> devices) {
+        this.devices = devices;
+    }
+
 
     public LocalTime getPowerOnTime() {
         return this.powerOnTime;
