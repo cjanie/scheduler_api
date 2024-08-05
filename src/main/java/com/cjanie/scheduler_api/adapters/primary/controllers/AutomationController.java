@@ -1,18 +1,12 @@
 package com.cjanie.scheduler_api.adapters.primary.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cjanie.scheduler_api.DI;
-import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
-import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationService;
-import com.cjanie.scheduler_api.DI;
-
-import java.io.ObjectInputFilter.Status;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

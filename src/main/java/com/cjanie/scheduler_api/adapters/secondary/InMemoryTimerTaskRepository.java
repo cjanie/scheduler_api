@@ -1,32 +1,29 @@
 package com.cjanie.scheduler_api.adapters.secondary;
 
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimerTask;
+import java.util.Timer;
 
 import com.cjanie.scheduler_api.businesslogic.gateways.TimerTaskRepository;
+import com.cjanie.scheduler_api.businesslogic.services.automation.IdentifiedTimerTask;
 
 public class InMemoryTimerTaskRepository implements TimerTaskRepository {
 
-    private Map<LocalTime, TimerTask> timerTaskMappedByTime;
-
+    private Map<IdentifiedTimerTask, Timer> timerTasks;
 
     public InMemoryTimerTaskRepository() {
-        this.timerTaskMappedByTime = new HashMap<>();
+        this.timerTasks = new HashMap<>();
     }
-
 
     @Override
-    public long add(LocalTime time, TimerTask timerTask) {
-        this.timerTaskMappedByTime.put(time, timerTask);
-        return timerTaskMappedByTime.size();
+    public long add(IdentifiedTimerTask timerTask, Timer timer) {
+        this.timerTasks.put(timerTask, timer);
+        return timerTasks.size();
     }
-
 
     @Override
-    public Map<LocalTime, TimerTask> getTimerTasksMappedByTime() {
-        return this.timerTaskMappedByTime;
+    public Map<IdentifiedTimerTask, Timer> getTimerTasks() {
+        return this.timerTasks;
     }
-    
+
 }

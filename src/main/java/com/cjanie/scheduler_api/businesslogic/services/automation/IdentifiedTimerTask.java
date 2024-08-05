@@ -1,41 +1,41 @@
 package com.cjanie.scheduler_api.businesslogic.services.automation;
 
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.TimerTask;
 
-import com.cjanie.scheduler_api.DI;
-import com.cjanie.scheduler_api.businesslogic.Schedule;
 import com.cjanie.scheduler_api.businesslogic.Task;
 import com.cjanie.scheduler_api.businesslogic.exceptions.GatewayException;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
 
-public class DynamicTimerTask extends TimerTask {
+public class IdentifiedTimerTask extends TimerTask {
 
-    private Schedule schedule = DI.getInstance().schedule();
+    private long automationId;
 
-    private LocalTime runTime;
+    private List<Task> tasks;
 
     private RunTaskGateway runTaskGateway;
 
-
-    public DynamicTimerTask(Schedule schedule, LocalTime runTime, RunTaskGateway runTaskGateway) {
-        this.schedule = schedule;
-        this.runTime = runTime;
+    public IdentifiedTimerTask(long automationId, List<Task> tasks, RunTaskGateway runTaskGateway) {
+        this.automationId = automationId;
+        this.tasks = tasks;
         this.runTaskGateway = runTaskGateway;
+    }
+
+    public long getAutomationId() {
+        return this.automationId;
     }
 
     @Override
     public void run() {
-        List<Task> tasks;
         try {
-            tasks = this.schedule.filterTasksByTriggerTime(runTime);
-            for (Task task: tasks) {
+            
+            for (Task task: this.tasks) {
                 task.run(this.runTaskGateway);
             }
         } catch (GatewayException e) {
+            // TODO handle the task that have failed
             e.printStackTrace();
         }
     }
+
 }

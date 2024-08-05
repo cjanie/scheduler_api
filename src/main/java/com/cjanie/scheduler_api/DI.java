@@ -1,17 +1,12 @@
 package com.cjanie.scheduler_api;
 
-import com.cjanie.scheduler_api.adapters.primary.TasksTimer;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryAutomationRepository;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryRunTaskAPI;
-import com.cjanie.scheduler_api.adapters.secondary.InMemoryTaskRepository;
 import com.cjanie.scheduler_api.adapters.secondary.InMemoryTimerTaskRepository;
 import com.cjanie.scheduler_api.adapters.secondary.RealTimeProvider;
 import com.cjanie.scheduler_api.adapters.secondary.SystemDefaultZoneProvider;
-import com.cjanie.scheduler_api.businesslogic.Schedule;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.RunTaskGateway;
-import com.cjanie.scheduler_api.businesslogic.gateways.TaskRepository;
-import com.cjanie.scheduler_api.businesslogic.gateways.TimerGateway;
 import com.cjanie.scheduler_api.businesslogic.gateways.TimerTaskRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemZoneProvider;
@@ -21,6 +16,18 @@ import com.cjanie.scheduler_api.businesslogic.services.automation.AddAutomationS
 public class DI {
 
     private static DI INSTANCE;
+
+    private SystemZoneProvider systemZoneProvider;
+
+    private SystemTimeProvider systemTimeProvider;
+
+    private AutomationRepository automationRepository;
+
+    private TimerTaskRepository timerTaskRepository;
+
+    private RunTaskGateway runTaskGateway;
+
+    private AddAutomationService addAutomationService;
 
     private DI() {
 
@@ -33,43 +40,18 @@ public class DI {
         return INSTANCE;
     }
 
-    private TaskRepository taskRepository;
-
-    private SystemTimeProvider systemTimeProvider;
-
-    private SystemZoneProvider systemZoneProvider;
-
-    private AutomationRepository automationRepository;
-
-    private RunTaskGateway runTaskGateway;
-
-    private AddAutomationService addAutomationService;
-
-    private Schedule schedule;
-
-    private TimerGateway timerGateway;
-
-    private TimerTaskRepository timerTaskRepository;
-
-    private TaskRepository taskRepository() {
-        if (this.taskRepository == null) {
-            this.taskRepository = new InMemoryTaskRepository();
-        }
-        return this.taskRepository;
-    }
-
-    public SystemTimeProvider systemTimeProvider() {
-        if(this.systemTimeProvider == null) {
-            this.systemTimeProvider = new RealTimeProvider(this.systemZoneProvider());
-        }
-        return this.systemTimeProvider;
-    }
-
     private SystemZoneProvider systemZoneProvider() {
         if(this.systemZoneProvider == null) {
             this.systemZoneProvider = new SystemDefaultZoneProvider();
         }
         return this.systemZoneProvider;
+    }
+
+    private SystemTimeProvider systemTimeProvider() {
+        if(this.systemTimeProvider == null) {
+            this.systemTimeProvider = new RealTimeProvider(this.systemZoneProvider());
+        }
+        return this.systemTimeProvider;
     }
 
     private AutomationRepository automationRepository() {
@@ -78,6 +60,14 @@ public class DI {
         }
         return this.automationRepository;
     }
+
+    private TimerTaskRepository timerTaskRepository() {
+        if (this.timerTaskRepository == null) {
+            this.timerTaskRepository = new InMemoryTimerTaskRepository();
+        }
+        return this.timerTaskRepository;
+    }
+
 
     private RunTaskGateway runTaskGateway() {
         if(this.runTaskGateway == null) {
@@ -91,35 +81,11 @@ public class DI {
             this.addAutomationService = new AddAutomationService(
                 this.automationRepository(),
                 this.systemTimeProvider(),
-                this.timerGateway(),
                 this.runTaskGateway(),
-                this.schedule(),
                 this.timerTaskRepository()
             );
         }
         return this.addAutomationService;
     }
-
-    public Schedule schedule() {
-        if(this.schedule == null) {
-            this.schedule = new Schedule(this.automationRepository(), this.systemTimeProvider());
-        }
-        return this.schedule;
-    }
-
-    public TimerGateway timerGateway() {
-        if(this.timerGateway == null) {
-            this.timerGateway = new TasksTimer(this.systemTimeProvider());
-        }
-        return this.timerGateway;
-    }
-
-    private TimerTaskRepository timerTaskRepository() {
-        if (this.timerTaskRepository == null) {
-            this.timerTaskRepository = new InMemoryTimerTaskRepository();
-        }
-        return this.timerTaskRepository;
-    }
-
     
 }

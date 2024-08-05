@@ -1,13 +1,11 @@
 package com.cjanie.scheduler_api.businesslogic;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.List;
 
 public class Automation {
+
+    private Long id;
 
     private LocalTime powerOnTime;
 
@@ -19,6 +17,15 @@ public class Automation {
         this.powerOnTime = powerOnTime;
         this.powerOffTime = powerOffTime;
         this.zoneId = zoneId;
+    }
+
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalTime getPowerOnTime() {

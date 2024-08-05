@@ -1,10 +1,7 @@
 package com.cjanie.scheduler_api.businesslogic.services.automation;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
