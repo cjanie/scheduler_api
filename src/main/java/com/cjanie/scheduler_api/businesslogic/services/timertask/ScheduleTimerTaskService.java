@@ -2,6 +2,7 @@ package com.cjanie.scheduler_api.businesslogic.services.timertask;
 
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import com.cjanie.scheduler_api.businesslogic.Automation;
 import com.cjanie.scheduler_api.businesslogic.IdentifiedTimerTask;
@@ -41,7 +42,11 @@ public class ScheduleTimerTaskService {
                 this.runTaskGateway
                 );
             Timer timer = new Timer();
-            timer.schedule(timerTask, LocalTimeUtil.timeToDate(task.getTriggerTime(), this.systemTimeProvider));
+            timer.schedule(
+                timerTask, 
+                LocalTimeUtil.timeToDate(task.getTriggerTime(), this.systemTimeProvider), // first date
+                TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS) // repeated delay = 1 day
+                );
             this.timerTaskRepository.add(timerTask, timer);
         }
     }
