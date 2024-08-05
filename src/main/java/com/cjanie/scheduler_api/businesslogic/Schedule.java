@@ -8,7 +8,6 @@ import com.cjanie.scheduler_api.businesslogic.exceptions.RepositoryException;
 import com.cjanie.scheduler_api.businesslogic.gateways.AutomationRepository;
 import com.cjanie.scheduler_api.businesslogic.gateways.SystemTimeProvider;
 import com.cjanie.scheduler_api.businesslogic.services.automation.TaskFactory;
-import com.cjanie.scheduler_api.businesslogic.utils.LocalTimeUtil;
 
 public class Schedule {
 
@@ -45,20 +44,6 @@ public class Schedule {
             }
         }
         return filteredTasks;
-    }
-
-    public LocalTime getNextTriggerTime(LocalTime lastTriggerTime) throws RepositoryException {
-        List<Task> allTasks = this.getAllTasks();
-        if(!allTasks.isEmpty()) {
-            List<LocalTime> triggerTimes = new ArrayList<>();
-
-            for (Task task: allTasks) {
-                triggerTimes.add(task.getTriggerTime());
-            }
-            return LocalTimeUtil.getNextTime(lastTriggerTime, triggerTimes);
-        }
-        return null;
-        
     }
     
 }
