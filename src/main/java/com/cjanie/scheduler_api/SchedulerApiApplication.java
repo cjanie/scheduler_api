@@ -17,7 +17,7 @@ public class SchedulerApiApplication {
 		SpringApplication.run(SchedulerApiApplication.class, args);
 
 		// In case the Automation database infrastructure already exists, 
-		// timer tasks should be initialized
+		// corresponding timer tasks need to be initialized
 		init();
 	}
 
