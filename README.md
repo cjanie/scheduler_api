@@ -5,7 +5,7 @@ Springboot Application.
 
 1. To run the application
 
-If you don't have the Java environnement installed but Docker installed you can run the application in a docker container, using the following command lines:
+If you don't have the Java environnement installed but Docker installed you can run the application in a Docker container, using the following command lines:
 
     cd path/to/the/application/folder/containing/the/Dockerfile
 
