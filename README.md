@@ -16,9 +16,7 @@ If you don't have the Java environnement installed but Docker installed you can 
 
 2. To use the API
 
-API URI: http://localhost:8080/automations
-
-If the application runs in a docker container, API URI is: http://127.0.0.1:8080/automations
+The API URI is http://localhost:8080/automations, or http://127.0.0.1:8080/automations if the application runs in a docker container.
 
 POST request payload structure (JSON):
 
